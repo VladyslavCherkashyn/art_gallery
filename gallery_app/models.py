@@ -1,7 +1,10 @@
+import os
+import uuid
 from enum import Enum
 
 from django.conf import settings
 from django.db import models
+from django.utils.text import slugify
 
 
 class ArtworkColor(Enum):
@@ -39,6 +42,18 @@ class ArtworkCategory(Enum):
     ILLUSTRATION = "Illustration"
 
 
+def artworks_image_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+    filename = f"{slugify(instance.title)}-{uuid.uuid4()}.{extension}"
+    return os.path.join("artworks/", filename)
+
+
+def artists_image_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+    filename = f"{slugify(instance.fullname)}-{uuid.uuid4()}.{extension}"
+    return os.path.join("artists/", filename)
+
+
 class Category(models.Model):
     CATEGORY_CHOICES = [(tag.value, tag.value) for tag in ArtworkCategory]
 
@@ -54,7 +69,7 @@ class Artist(models.Model):
     bio = models.TextField(max_length=100)
     categories = models.ManyToManyField(to=Category)
     phone = models.CharField(max_length=50)
-    image = models.ImageField()
+    image = models.ImageField(null=True, upload_to=artists_image_path)
 
 
 class Artwork(models.Model):
@@ -62,7 +77,7 @@ class Artwork(models.Model):
     artist = models.ForeignKey(
         to=Artist, on_delete=models.CASCADE, related_name="artworks"
     )
-    image_url = models.URLField()
+    image_url = models.ImageField(null=True, upload_to=artworks_image_path)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     likes = models.ManyToManyField(
