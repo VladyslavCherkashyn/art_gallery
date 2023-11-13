@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import mimetypes
 import os
 from datetime import timedelta
 from pathlib import Path
@@ -44,7 +43,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
-    "debug_toolbar",
     "corsheaders",
     "rest_framework",
     "drf_spectacular",
@@ -54,7 +52,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -65,10 +62,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "art_gallery.urls"
-
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
 
 TEMPLATES = [
     {
@@ -154,10 +147,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-mimetypes.add_type("application/javascript", ".js", True)
-
-
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -177,5 +166,5 @@ CORS_ALLOWED_ORIGINS = [
     "http://0.0.0.0:5173",
     "http://127.0.0.1:3000",
     "http://localhost:3000",
-    "http://0.0.0.0:3000",
+    "http://0.0.0.0:3000"
 ]
