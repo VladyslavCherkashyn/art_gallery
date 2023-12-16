@@ -10,6 +10,17 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["id", "name"]
 
 
+class SimilarArtworkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Artwork
+        fields = [
+            "id",
+            "title",
+            "image_url",
+
+        ]
+
+
 class ArtworkSerializer(serializers.ModelSerializer):
     artist = serializers.PrimaryKeyRelatedField(
         queryset=Artist.objects.all()
@@ -19,6 +30,7 @@ class ArtworkSerializer(serializers.ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), allow_null=True
     )
+    similar_artworks = serializers.SerializerMethodField()
 
     @staticmethod
     def get_color(obj):
@@ -27,6 +39,13 @@ class ArtworkSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_likes(obj):
         return obj.liked_by.count()
+
+    def get_similar_artworks(self, obj):
+        artist = obj.artist
+
+        similar_artworks = Artwork.objects.filter(artist=artist).exclude(id=obj.id)
+        return SimilarArtworkSerializer(similar_artworks, many=True).data
+
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -46,8 +65,9 @@ class ArtworkSerializer(serializers.ModelSerializer):
             "categories",
             "year",
             "likes",
+            "similar_artworks",  # Доданий новий поле для подібних робіт
         ]
-        read_only_fields = ["likes"]
+        read_only_fields = ["likes", "similar_artworks"]
 
 
 class ArtworkCreateSerializer(serializers.ModelSerializer):
