@@ -17,14 +17,17 @@ class SimilarArtworkSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "image_url",
-
         ]
 
 
+class ArtistArtworkDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Artist
+        fields = ["id", "fullname", "location", "bio", "phone", "image"]
+
+
 class ArtworkSerializer(serializers.ModelSerializer):
-    artist = serializers.PrimaryKeyRelatedField(
-        queryset=Artist.objects.all()
-    )
+    artist = ArtistArtworkDetailSerializer()
     likes = serializers.SerializerMethodField()
     color = serializers.SerializerMethodField()
     categories = serializers.PrimaryKeyRelatedField(
@@ -45,7 +48,6 @@ class ArtworkSerializer(serializers.ModelSerializer):
 
         similar_artworks = Artwork.objects.filter(artist=artist).exclude(id=obj.id)
         return SimilarArtworkSerializer(similar_artworks, many=True).data
-
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
