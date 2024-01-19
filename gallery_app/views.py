@@ -29,6 +29,15 @@ class ArtworkViewSet(BaseArtViewSet):
     queryset = Artwork.objects.all()
     serializer_class = ArtworkSerializer
 
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     artwork = self.get_object()
+    #     artist = artwork.artist
+    #     other_artworks = Artwork.objects.filter(artist=artist).exclude(id=artwork.id)
+    #
+    #     context['other_artworks'] = other_artworks
+    #     return context
+
     @action(detail=True, methods=['patch'])
     def like(self, request, pk=None):
         artwork = self.get_object()

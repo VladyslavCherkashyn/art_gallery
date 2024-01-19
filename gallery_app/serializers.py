@@ -67,7 +67,7 @@ class ArtworkSerializer(serializers.ModelSerializer):
             "categories",
             "year",
             "likes",
-            "similar_artworks",  # Доданий новий поле для подібних робіт
+            "similar_artworks", #поле для подібних робіт
         ]
         read_only_fields = ["likes", "similar_artworks"]
 
