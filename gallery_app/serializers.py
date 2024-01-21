@@ -11,12 +11,19 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class SimilarArtworkSerializer(serializers.ModelSerializer):
+    image_thumbnail = serializers.SerializerMethodField()
+
+    def get_image_thumbnail(self, obj):
+        if obj.image_thumbnail:
+            return obj.image_thumbnail.url
+        return None
+
     class Meta:
         model = Artwork
         fields = [
             "id",
             "title",
-            "image_url",
+            "image_thumbnail",
         ]
 
 
